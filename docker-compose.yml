@@ -6,11 +6,13 @@ services:
     environment:
       TZ: Europe/Moscow
       SAURES_API_URL: ${SAURES_API_URL}
+    ports:
+      - "8094:80"
     env_file:
       - .env
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.saures.rule=Host(`saures.housekpr.ru`)"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.saures.rule=Host(`saures.housekpr.ru`)"
     networks:
       - housekpr-network
 

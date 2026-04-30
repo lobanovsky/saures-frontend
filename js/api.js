@@ -1,10 +1,14 @@
 const API_BASE = 'http://localhost:8080';
 
 async function request(method, path, body) {
+  const options = { method };
+  if (body != null) {
+    options.headers = { 'Content-Type': 'application/json' };
+    options.body = JSON.stringify(body);
+  }
+
   const res = await fetch(API_BASE + path, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: body != null ? JSON.stringify(body) : undefined,
+    ...options,
   });
 
   if (!res.ok) {
