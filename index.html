@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>САУРЕС — Показания счётчиков</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <span class="header-title">Показания счётчиков</span>
+    <button id="sync-all-btn" class="btn btn-success btn-sm">Синхронизировать все</button>
+  </header>
+
+  <main class="app-main">
+    <div id="sync-result" class="success-msg hidden"></div>
+    <div id="global-error" class="error-msg hidden"></div>
+
+    <div id="devices-loading" class="loading-state">
+      <span class="spinner"></span>
+      <p>Загрузка устройств...</p>
+    </div>
+
+    <div id="devices-grid" class="devices-grid hidden"></div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/devices.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
