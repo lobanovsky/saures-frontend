@@ -72,11 +72,12 @@ html, body {
 }
 .btn:active { opacity: .8; }
 .btn-primary { background: var(--blue); color: #fff; }
-.btn-success { background: var(--green); color: #fff; }
+.btn-success { background: var(--green); color: #fff; min-width: 176px; }
 .btn-ghost { background: var(--gray-100); color: var(--gray-600); }
 .btn-sm { min-height: 36px; padding: 0 14px; font-size: 0.85rem; border-radius: 8px; }
 .btn-full { width: 100%; }
 .btn:disabled { background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; pointer-events: none; }
+.btn-success:disabled { background: var(--gray-200); color: var(--gray-400); }
 
 /* Messages */
 .error-msg {
@@ -160,6 +161,14 @@ html, body {
   white-space: nowrap;
   flex-shrink: 0;
 }
+.device-badge-hot {
+  background: #fef2f2;
+  color: var(--red);
+}
+.device-badge-cold {
+  background: var(--blue-light);
+  color: var(--blue);
+}
 
 .device-meta {
   font-size: 0.82rem;
@@ -212,6 +221,11 @@ html, body {
 .reading-extra span {
   display: inline-block;
   margin-right: 10px;
+}
+.reading-timestamp {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  margin-top: 4px;
 }
 .reading-spinner {
   display: flex;

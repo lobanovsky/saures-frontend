@@ -10,6 +10,9 @@ function escHtml(str) {
 function renderReadingPanel(r) {
   const primary = r.valuePrimary != null ? Number(r.valuePrimary).toFixed(3) : '—';
   const unit = escHtml(r.unit);
+  const syncedAt = r.syncedAt
+    ? `<div class="reading-timestamp">Обновлено ${escHtml(new Date(r.syncedAt).toLocaleString('ru-RU'))}</div>`
+    : '';
 
   let extraHtml = '';
   if (r.valueExtra && r.valueExtra.trim() !== '') {
@@ -24,7 +27,26 @@ function renderReadingPanel(r) {
       <span class="reading-value">${escHtml(primary)}</span>
       <span class="reading-unit">${unit}</span>
     </div>
-    ${extraHtml}`;
+    ${extraHtml}
+    ${syncedAt}`;
+}
+
+function meterBadgeClass(device) {
+  const type = `${device.meterType || ''} ${device.meterName || ''}`.toLowerCase();
+  if (type.includes('горяч') || type.includes('гвс')) return 'device-badge device-badge-hot';
+  if (type.includes('холод') || type.includes('хвс')) return 'device-badge device-badge-cold';
+  return 'device-badge';
+}
+
+function showReading(meterId, reading) {
+  const panel = document.getElementById(`reading-${meterId}`);
+  if (!panel || !reading) return;
+  panel.innerHTML = renderReadingPanel(reading);
+  panel.classList.remove('hidden');
+}
+
+function showReadings(readings) {
+  readings.forEach(reading => showReading(reading.meterId, reading));
 }
 
 function renderDeviceCard(device) {
@@ -36,7 +58,7 @@ function renderDeviceCard(device) {
     <div class="device-card" data-meter-id="${device.meterId}">
       <div class="device-card-header">
         <span class="device-name">${escHtml(device.meterName)}</span>
-        <span class="device-badge">${escHtml(device.meterType)}</span>
+        <span class="${meterBadgeClass(device)}">${escHtml(device.meterType)}</span>
       </div>
       <div class="device-meta">
         <span><span class="meta-label">Объект</span> ${escHtml(device.objectLabel)}</span>
@@ -77,7 +99,7 @@ async function fetchReading(meterId) {
     const data = await api.get(`/readings/current/${meterId}`);
     const r = Array.isArray(data) ? data[0] : data;
     if (!r) throw new Error('Нет данных');
-    panel.innerHTML = renderReadingPanel(r);
+    showReading(meterId, r);
   } catch (err) {
     panel.innerHTML = `<span class="reading-error">${escHtml(err.message)}</span>`;
   } finally {
@@ -98,6 +120,7 @@ async function syncAll() {
 
   try {
     const data = await api.post('/sync');
+    showReadings(data.readings || []);
     const ts = data.readings && data.readings.length > 0
       ? new Date(data.readings[0].syncedAt).toLocaleString('ru-RU')
       : new Date().toLocaleString('ru-RU');
@@ -121,8 +144,12 @@ async function loadDevices() {
   errEl.classList.add('hidden');
 
   try {
-    const devices = await api.get('/devices');
+    const [devices, latestReadings] = await Promise.all([
+      api.get('/devices'),
+      api.get('/readings/latest'),
+    ]);
     renderDevices(devices);
+    showReadings(latestReadings || []);
   } catch (err) {
     errEl.textContent = err.message || 'Не удалось загрузить устройства';
     errEl.classList.remove('hidden');
