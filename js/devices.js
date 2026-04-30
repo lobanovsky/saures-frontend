@@ -42,6 +42,7 @@ function renderDeviceCard(device) {
         <span><span class="meta-label">Объект</span> ${escHtml(device.objectLabel)}</span>
         <span><span class="meta-label">Адрес</span> ${escHtml(device.objectAddress)}</span>
         <span><span class="meta-label">Сенсор</span> ${escHtml(device.sensorSn)}</span>
+        <span><span class="meta-label">Счётчик</span> ${escHtml(device.meterSn || '—')}</span>
         <span class="${stateClass}">${escHtml(device.state)}</span>
       </div>
       <div class="device-card-footer">
